@@ -31,7 +31,7 @@ else if( pid > 0 ) /* se sou o processo pai*/
          inicio = clock ();
 	 while (difftime (time(NULL), horainicio) < 1) { /* controle de 1 sengundo*/
                memoriausada = (memoriausada + (memoria.totalram-memoria.freeram)); 
- 	       fim = clock(NULL)																  	         fim = clock();
+               fim = clock();
                gettimeofday (&final,NULL);
       	 }
          nCPU = sysconf(_SC_NPROCESSORS_ONLN);
