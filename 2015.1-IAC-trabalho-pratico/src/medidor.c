@@ -35,9 +35,8 @@ else if( pid > 0 ) /* se sou o processo pai*/
                gettimeofday (&final,NULL);
       	 }
          nCPU = sysconf(_SC_NPROCESSORS_ONLN);
-         printf("N de CPU: %i\n", nCPU);
-         printf("Uso da CPU = %.f%%\n",((((double) (fim-inicio))/nCPU)/1000));
-     	 printf("Uso da Memória = %lu\n",memoriausada/1048);
+         printf("Uso da CPU = %.f%%\n",((((double) (fim-inicio))/nCPU)/1000)); /*calcula o uso da CPU*/
+     	 printf("Uso da Memória = %lu\n",memoriausada/1048); /*calcula o uso da memória*/
     }
     kill (0,SIGKILL);
 
