@@ -1,21 +1,22 @@
 #include <unistd.h>
 #include <sys/types.h>
 #include <sys/wait.h>
-#include <unistd.h>
 #include <time.h>
-#include <times.h>
+#include <sys/time.h>
+#include <sys/sysinfo.h>
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
 
-int main () {
+int main (int argc, char *argv[1], char *envp[]) {
 
-int pid ; /* identificador de processo */
-int tempo = 10;
-char medir;
-time_t horainicio;
-struct tms tempodecpu;
+int pid; /* identificador de processo */
+int tempo = 10, nCPU, i, j;
+long memoriausada;
+time_t horainicio, inicio, fim;
+struct sysinfo memoria;
+struct timeval comeco,final;
 
-medir = 'c';
 
 pid = fork () ; /* replicação do processo */
 
@@ -25,23 +26,32 @@ if ( pid < 0 ) { /* se fork não funcionou */
 }
 else if( pid > 0 ) /* se sou o processo pai*/
 {
-    horainicio = time(NULL);
-    while (difftime (time(NULL), horainicio) < tempo) {
-       printf("Child process user time = %fn",((double) tempodecpu.tms_cutime)/CLK_TCK);
-       sleep (1);
+    for (j=0;j<10;j++){ /* Timer para medição dos recursos a cada 1 segundo durante 10 segundos */
+         horainicio = time(NULL);
+         inicio = clock ();
+	 while (difftime (time(NULL), horainicio) < 1) { /* controle de 1 sengundo*/
+               memoriausada = (memoriausada + (memoria.totalram-memoria.freeram)); 
+ 	       fim = clock(NULL)																  	         fim = clock();
+               gettimeofday (&final,NULL);
+      	 }
+         nCPU = sysconf(_SC_NPROCESSORS_ONLN);
+         printf("N de CPU: %i\n", nCPU);
+         printf("Uso da CPU = %.f%%\n",((((double) (fim-inicio))/nCPU)/1000));
+     	 printf("Uso da Memória = %lu\n",memoriausada/1048);
     }
+    kill (0,SIGKILL);
 
 }
 else /* senão, sou o processo filho*/
 {
-        if medir == 'c' {
+        if (strcmp(argv[1],"cpu") == 0) {
 
             for (;;){
-
+              
             }
         }
-        if medir == 'm' {
-
+        if (strcmp(argv[1],"mem-cpu")== 0) {
+																																																																									
             for (;;){
                  malloc(sizeof(100000));
             }
@@ -49,8 +59,6 @@ else /* senão, sou o processo filho*/
 
 }
 perror ("Erro: ") ; /* execve não funcionou */
-
 printf ("Tchau !\n") ;
 exit(0) ; /* encerra o processo com sucesso (código 0) */
-
 }
